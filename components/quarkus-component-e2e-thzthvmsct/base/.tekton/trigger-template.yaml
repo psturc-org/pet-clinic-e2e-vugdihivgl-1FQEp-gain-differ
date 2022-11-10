@@ -1,0 +1,57 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  creationTimestamp: null
+  name: quarkus-component-e2e-thzthvmsct
+  namespace: has-e2e-qbfw
+spec:
+  params:
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      annotations:
+        appstudio.openshift.io/application: pet-clinic-e2e-vugdihivgl
+        appstudio.openshift.io/component: quarkus-component-e2e-thzthvmsct
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      creationTimestamp: null
+      generateName: quarkus-component-e2e-thzthvmsct-
+      labels:
+        appstudio.openshift.io/application: pet-clinic-e2e-vugdihivgl
+        appstudio.openshift.io/component: quarkus-component-e2e-thzthvmsct
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      namespace: has-e2e-qbfw
+    spec:
+      params:
+      - name: git-url
+        value: https://github.com/redhat-appstudio-qe/devfile-sample-code-with-quarkus
+      - name: output-image
+        value: quay.io/redhat-appstudio/user-workload:has-e2e-qbfw-quarkus-component-e2e-thzthvmsct-$(tt.params.git-revision)
+      - name: dockerfile
+        value: https://raw.githubusercontent.com/redhat-appstudio-qe/devfile-sample-code-with-quarkus/main/src/main/docker/Dockerfile.jvm.staged
+      - name: path-context
+        value: ./
+      pipelineRef:
+        bundle: quay.io/redhat-appstudio-tekton-catalog/pipeline-docker-build:be6b481ac69c4cb16fe633ad2ded9df60e58625d
+        name: docker-build
+      workspaces:
+      - name: workspace
+        volumeClaimTemplate:
+          metadata:
+            creationTimestamp: null
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+          status: {}
+    status: {}
+status: {}
